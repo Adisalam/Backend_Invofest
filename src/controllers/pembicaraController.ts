@@ -1,99 +1,55 @@
 import type { Request, Response } from "express";
+import type { Pembicara } from "../types/pembicara.js";
 import { prisma } from "../lib/db.js";
 
-// 1. Menampilkan semua pembicara dari Supabase
 export const getAllPembicara = async (req: Request, res: Response): Promise<void> => {
-    try {
-        const pembicara = await prisma.pembicara.findMany({
-            orderBy: { id: 'asc' }
-        });
-        res.json(pembicara);
-    } catch (error) {
-        res.status(500).json({ message: "Gagal mengambil data pembicara", error });
-    }
+  const data = await prisma.pembicara.findMany();
+  res.json(data);
 };
 
-// 2. Menyimpan data pembicara baru ke Supabase
-export const createPembicara = async (req: Request, res: Response): Promise<any> => {
-    try {
-        const { name, job, email, photo, bio, status } = req.body;
+export const createPembicara = async (req: Request, res: Response): Promise<void> => {
+  const { name, role, email, photo, bio, status } = req.body;
 
-        if (!name || !job || !email || !bio || !status) {
-            return res.status(400).json({ message: "Semua field wajib diisi kecuali foto" });
-        }
+  if (!name || !role || !email || !bio || !status) {
+    res.status(400).json({ message: "Semua field wajib diisi kecuali foto" });
+    return;
+  }
 
-        // Cek apakah email sudah terdaftar di Supabase untuk menghindari error crash @unique
-        const existingEmail = await prisma.pembicara.findUnique({ where: { email } });
-        if (existingEmail) {
-            return res.status(400).json({ message: "Email sudah digunakan oleh pembicara lain" });
-        }
+  const data = await prisma.pembicara.create({
+    data: { name, role, email, photo, bio, status },
+  });
 
-        const newPembicara = await prisma.pembicara.create({
-            data: {
-                name,
-                job,
-                email,
-                photo: photo || null,
-                bio,
-                status
-            }
-        });
-
-        res.status(201).json(newPembicara);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Terjadi kesalahan saat membuat pembicara", error });
-    }
+  res.status(201).json(data);
 };
 
-// 3. Menampilkan data pembicara berdasarkan id
-export const getPembicaraById = async (req: Request, res: Response): Promise<any> => {
-    try {
-        const id = Number(req.params.id);
-        const p = await prisma.pembicara.findUnique({ where: { id } });
+export const getPembicaraById = async (req: Request, res: Response): Promise<void> => {
+  const id = Number(req.params.id);
 
-        if (!p) {
-            return res.status(404).json({ message: "Pembicara tidak ditemukan" });
-        }
-        res.json(p);
-    } catch (error) {
-        res.status(500).json({ message: "Gagal mengambil data pembicara", error });
-    }
+  const data = await prisma.pembicara.findUnique({ where: { id } });
+
+  if (!data) {
+    res.status(404).json({ message: "Pembicara tidak ditemukan" });
+    return;
+  }
+  res.json(data);
 };
 
-// 4. Mengupdate data pembicara berdasarkan id
-export const updatePembicaraById = async (req: Request, res: Response): Promise<any> => {
-    try {
-        const id = Number(req.params.id);
-        const { name, job, email, photo, bio, status } = req.body;
+export const updatePembicaraById = async (req: Request, res: Response): Promise<void> => {
+  const id = Number(req.params.id);
+  const { name, role, email, photo, bio, status } = req.body;
 
-        const updatedPembicara = await prisma.pembicara.update({
-            where: { id },
-            data: {
-                name,
-                job,
-                email,
-                photo,
-                bio,
-                status
-            }
-        });
+  const data = await prisma.pembicara.update({
+    where: { id },
+    data: { name, role, email, photo, bio, status },
+  });
 
-        // ✅ SEBELUMNYA: res.json(updatedEvent); (INI YANG TYPO)
-        res.json(updatedPembicara); // FIXX: Sudah diganti ke updatedPembicara
-    } catch (error) {
-        res.status(500).json({ message: "Gagal mengupdate pembicara", error });
-    }
+  res.json(data);
 };
 
-// 5. Menghapus data pembicara berdasarkan id
-export const deletePembicaraById = async (req: Request, res: Response): Promise<any> => {
-    try {
-        const id = Number(req.params.id);
-        
-        await prisma.pembicara.delete({ where: { id } });
-        res.json({ message: `Pembicara dengan ID ${id} berhasil dihapus` });
-    } catch (error) {
-        res.status(500).json({ message: "Gagal menghapus data pembicara, pastikan tidak terikat dengan event manapun.", error });
-    }
+export const deletePembicaraById = async (req: Request, res: Response): Promise<void> => {
+  const id = Number(req.params.id);
+
+  await prisma.pembicara.delete({ where: { id } });
+
+  res.json({ message: `Pembicara dengan ID ${id} berhasil dihapus` });
 };
