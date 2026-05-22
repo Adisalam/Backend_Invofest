@@ -41,4 +41,6 @@ model pembicara {
   bio    String  @default("")
   status String  @default("")
   events Event[] // ← 3. Tambah field array ini agar relasi dua arahnya valid
+
+  @@map("pembicara")
 }
