@@ -1,19 +1,21 @@
-import express from "express";
-import cors from "cors";
-import eventRoutes from "./routes/eventRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import speakerRoutes from "./routes/speakerRoutes.js";
+import express from 'express';
+import cors from 'cors';
+import eventRoutes from './routes/eventRoute.js';
+import categoryRoutes from './routes/categoryRoute.js';
+import pembicaraRoute from './routes/pembicaraRoute.js';
 const app = express();
-const PORT = process.env.PORT || 3000;
-app.use(cors());
+const port = 3000;
+app.use(cors({
+    origin: 'http://localhost:5173' // atau cukup cors() untuk mengizinkan semua
+}));
 app.use(express.json());
-app.use("/events", eventRoutes);
-app.use("/categories", categoryRoutes);
-app.use("/speakers", speakerRoutes);
-app.get("/", (req, res) => {
-    res.send("Backend Invofest");
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
 });
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+app.use("/events", eventRoutes);
+app.use("/categories", categoryRoutes); // Endpoint: http://localhost:3000/categories
+app.use("/pembicara", pembicaraRoute);
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
 //# sourceMappingURL=index.js.map

@@ -1,11 +1,10 @@
-export type Event = {
+export interface Event {
     id: number;
-    title: string;
-    categoryId: number;
-    speakersId: number;
+    name: string;
+    category: string;
+    date: string;
     location: string;
-    dateEvent: string;
     description: string;
-    createdAt: string;
-};
-//# sourceMappingURL=Event.d.ts.map
+    status: string;
+}
+//# sourceMappingURL=event.d.ts.map

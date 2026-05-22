@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 
 app.use("/events", eventRoutes);
 app.use("/categories", categoryRoutes); // Endpoint: http://localhost:3000/categories
-app.use("/pembicara", pembicaraRoute);
+app.use("/speakers", pembicaraRoute);
 
 
 app.listen(port, () => {

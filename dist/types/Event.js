@@ -1,2 +1,3 @@
+;
 export {};
-//# sourceMappingURL=Event.js.map
+//# sourceMappingURL=event.js.map

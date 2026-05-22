@@ -1,6 +1,5 @@
-export type Category = {
+export interface Category {
     id: number;
     name: string;
-    createdAt: string;
-};
-//# sourceMappingURL=Category.d.ts.map
+}
+//# sourceMappingURL=category.d.ts.map
